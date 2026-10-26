@@ -8,6 +8,7 @@ const searchGames = async(searchTerm) => {
         if(response.ok) {
             const data = await response.json();
             console.log(data);
+            renderGames(data.results);
         } else {
             console.log('HTTP error:', response.status, response.statusText);
         }
@@ -15,6 +16,21 @@ const searchGames = async(searchTerm) => {
     catch(error) {
         console.log(error);
   }
+}
+
+function renderGames(games) {
+    const container = document.getElementById('results');
+    container.innerHTML = '';
+    games.forEach(game => {
+        const card = document.createElement('div');
+        card.innerHTML = `
+            <img src="${game.background_image}" alt="${game.name}" width="200">
+            <h2>${game.name}</h2>
+            <p>Released: ${game.released}</p>
+            <p>Rating: ${game.rating}</p>
+        `;
+        container.appendChild(card);
+    })
 }
 
 searchGames("zelda");
