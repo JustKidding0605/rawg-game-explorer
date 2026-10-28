@@ -33,4 +33,12 @@ function renderGames(games) {
     })
 }
 
-searchGames("zelda");
+function handleSearch(event) {
+    event.preventDefault();
+    const searchTerm = document.getElementById('search-input').value;
+    searchGames(searchTerm);
+}
+
+
+const form = document.getElementById('search-form');
+form.addEventListener('submit', handleSearch);
