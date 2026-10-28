@@ -29,8 +29,50 @@ function renderGames(games) {
             <p>Released: ${game.released}</p>
             <p>Rating: ${game.rating}</p>
         `;
+        card.addEventListener('click', () => {
+            showGameDetail(game.id);
+        });
         container.appendChild(card);
     })
+}
+
+function renderDetail(game) {
+    const detailContainer = document.getElementById('detail');
+    const resultsContainer = document.getElementById('results');
+    detailContainer.innerHTML = `
+        <button id="back-button">Back</button>
+        <h2>${game.name}</h2>
+        <img src="${game.background_image}" alt="${game.name}">
+        <p>${game.description_raw}</p>
+        <p>Released: ${game.released} Rating: ${game.rating}</p>
+        <p>Platforms: ${game.platforms.map(p => p.platform.name).join(', ')}</p>
+        <p>Genres: ${game.genres.map(genre => genre.name).join(', ')}</p>
+    `
+    const buttonContainer = document.getElementById('back-button');
+
+    resultsContainer.hidden = true;
+    detailContainer.hidden = false;
+
+    buttonContainer.addEventListener('click', () => {
+        resultsContainer.hidden = false;
+        detailContainer.hidden = true;
+    });
+}
+
+const showGameDetail = async(gameId) => {
+    const url = `${BASE_URL}/games/${gameId}?key=${API_KEY}`;
+    try {
+        const response = await fetch(url);
+        if(response.ok) {
+            const data = await response.json();
+            renderDetail(data);
+        } else {
+            console.log('HTTP error:', response.status, response.statusText);
+        }
+    }
+    catch(error) {
+        console.log(error);
+    }
 }
 
 function handleSearch(event) {
