@@ -45,3 +45,92 @@ h1 {
   letter-spacing: -0.02em;
   margin-bottom: 2rem;
 }
+
+/* --- Search form --- */
+#search-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+  max-width: 500px;
+}
+
+#search-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+#search-input:focus {
+  border-color: var(--accent);
+}
+
+#search-form button {
+  padding: 0.75rem 1.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--bg);
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+#search-form button:hover {
+  opacity: 0.9;
+}
+
+/* --- Results grid --- */
+#results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* --- Game cards --- */
+#results > div {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+#results > div:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+
+#results > div img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+#results > div h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  padding: 1rem 1rem 0.25rem;
+}
+
+#results > div p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  padding: 0 1rem;
+}
+
+#results > div p:last-child {
+  padding-bottom: 1rem;
+}

@@ -24,7 +24,7 @@ function renderGames(games) {
     games.forEach(game => {
         const card = document.createElement('div');
         card.innerHTML = `
-            <img src="${game.background_image}" alt="${game.name}" width="200">
+            <img src="${game.background_image}" alt="${game.name}">
             <h2>${game.name}</h2>
             <p>Released: ${game.released}</p>
             <p>Rating: ${game.rating}</p>
