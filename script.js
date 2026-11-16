@@ -1,24 +1,47 @@
 const API_KEY = '8a5d458ffd134bfcb0486700977c732f';
 const BASE_URL = 'https://api.rawg.io/api';
 
+const loader = document.getElementById('loader');
+const errorBox = document.getElementById('error');
+
+function showError(message) {
+    errorBox.textContent = message;
+    errorBox.hidden = false;
+}
+
+function clearError() {
+    errorBox.textContent = '';
+    errorBox.hidden = true;
+}
+
+
 const searchGames = async(searchTerm) => {
-    const url = `${BASE_URL}/games?search=${searchTerm}&key=${API_KEY}`;
+    const url = `${BASE_URL}/games?search=${encodeURIComponent(searchTerm)}&key=${API_KEY}`;
+    clearError();
+    loader.hidden = false;
     try {
         const response = await fetch(url);
         if(response.ok) {
             const data = await response.json();
             renderGames(data.results, searchTerm);
         } else {
-            console.log('HTTP error:', response.status, response.statusText);
+            console.error('HTTP error:', response.status, response.statusText);
+            showError(`Server error (${response.status}). Please try again.`);
         }
     }
     catch(error) {
         console.error(error);
-  }
+        showError('Network error. Check your connection and try again.');
+    }
+    finally {
+        loader.hidden = true;
+    }
 }
 
 function renderGames(games, searchTerm) {
     const container = document.getElementById('results');
+    document.getElementById('detail').hidden = true;
+    container.hidden = false;
     container.innerHTML = '';
     if(games.length === 0) {
         container.innerHTML = `<p>No games found for "${searchTerm}". Try another search?</p>`;
@@ -45,13 +68,13 @@ function renderDetail(game) {
     const detailContainer = document.getElementById('detail');
     const resultsContainer = document.getElementById('results');
     detailContainer.innerHTML = `
-        <button id="back-button">Back</button>
         <h2>${game.name}</h2>
         <img src="${game.background_image}" alt="${game.name}">
         <p>${game.description_raw}</p>
         <p>Released: ${game.released} Rating: ${game.rating}</p>
         <p>Platforms: ${game.platforms.map(p => p.platform.name).join(', ')}</p>
         <p>Genres: ${game.genres.map(genre => genre.name).join(', ')}</p>
+        <button id="back-button">Back</button>
     `
     const buttonContainer = document.getElementById('back-button');
 
@@ -66,17 +89,24 @@ function renderDetail(game) {
 
 const showGameDetail = async(gameId) => {
     const url = `${BASE_URL}/games/${gameId}?key=${API_KEY}`;
+    clearError();
+    loader.hidden = false;
     try {
         const response = await fetch(url);
         if(response.ok) {
             const data = await response.json();
             renderDetail(data);
         } else {
-            console.log('HTTP error:', response.status, response.statusText);
+            console.error('HTTP error:', response.status, response.statusText);
+            showError(`Couldn't load game details (${response.status}). Please try again.`);
         }
     }
     catch(error) {
-        console.log(error);
+        console.error(error);
+        showError('Network error. Check your connection and try again.');
+    }
+    finally {
+        loader.hidden = true;
     }
 }
 
@@ -84,6 +114,7 @@ function handleSearch(event) {
     event.preventDefault();
     const searchTerm = document.getElementById('search-input').value;
     if(searchTerm.trim() === '') {
+        showError('Please enter a game name');
         return;
     } 
     searchGames(searchTerm);
