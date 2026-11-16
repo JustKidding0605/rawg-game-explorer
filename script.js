@@ -7,33 +7,38 @@ const searchGames = async(searchTerm) => {
         const response = await fetch(url);
         if(response.ok) {
             const data = await response.json();
-            console.log(data);
-            renderGames(data.results);
+            renderGames(data.results, searchTerm);
         } else {
             console.log('HTTP error:', response.status, response.statusText);
         }
     }
     catch(error) {
-        console.log(error);
+        console.error(error);
   }
 }
 
-function renderGames(games) {
+function renderGames(games, searchTerm) {
     const container = document.getElementById('results');
     container.innerHTML = '';
-    games.forEach(game => {
-        const card = document.createElement('div');
-        card.innerHTML = `
-            <img src="${game.background_image}" alt="${game.name}">
-            <h2>${game.name}</h2>
-            <p>Released: ${game.released}</p>
-            <p>Rating: ${game.rating}</p>
-        `;
-        card.addEventListener('click', () => {
-            showGameDetail(game.id);
-        });
-        container.appendChild(card);
-    })
+    if(games.length === 0) {
+        container.innerHTML = `<p>No games found for "${searchTerm}". Try another search?</p>`;
+        return;
+    }
+    else {
+        games.forEach(game => {
+            const card = document.createElement('div');
+            card.innerHTML = `
+                <img src="${game.background_image}" alt="${game.name}">
+                <h2>${game.name}</h2>
+                <p>Released: ${game.released}</p>
+                <p>Rating: ${game.rating}</p>
+            `;
+            card.addEventListener('click', () => {
+                showGameDetail(game.id);
+            });
+            container.appendChild(card);
+        })
+    }
 }
 
 function renderDetail(game) {
@@ -78,6 +83,9 @@ const showGameDetail = async(gameId) => {
 function handleSearch(event) {
     event.preventDefault();
     const searchTerm = document.getElementById('search-input').value;
+    if(searchTerm.trim() === '') {
+        return;
+    } 
     searchGames(searchTerm);
 }
 
