@@ -1,5 +1,4 @@
-const API_KEY = '8a5d458ffd134bfcb0486700977c732f';
-const BASE_URL = 'https://api.rawg.io/api';
+const BACKEND_URL = 'http://127.0.0.1:8000/api';
 
 const loader = document.getElementById('loader');
 const errorBox = document.getElementById('error');
@@ -16,7 +15,7 @@ function clearError() {
 
 
 const searchGames = async(searchTerm) => {
-    const url = `${BASE_URL}/games?search=${encodeURIComponent(searchTerm)}&key=${API_KEY}`;
+    const url = `${BACKEND_URL}/games?search=${encodeURIComponent(searchTerm)}`;
     clearError();
     loader.hidden = false;
     try {
@@ -72,8 +71,8 @@ function renderDetail(game) {
         <img src="${game.background_image}" alt="${game.name}">
         <p>${game.description_raw}</p>
         <p>Released: ${game.released} Rating: ${game.rating}</p>
-        <p>Platforms: ${game.platforms.map(p => p.platform.name).join(', ')}</p>
-        <p>Genres: ${game.genres.map(genre => genre.name).join(', ')}</p>
+        <p>Platforms: ${game.platforms?.map(p => p.platform.name).join(', ') || 'N/A'}</p>
+        <p>Genres: ${game.genres?.map(genre => genre.name).join(', ') || 'N/A'}</p>
         <button id="back-button">Back</button>
     `
     const buttonContainer = document.getElementById('back-button');
@@ -88,7 +87,7 @@ function renderDetail(game) {
 }
 
 const showGameDetail = async(gameId) => {
-    const url = `${BASE_URL}/games/${gameId}?key=${API_KEY}`;
+    const url = `${BACKEND_URL}/games/${gameId}`;
     clearError();
     loader.hidden = false;
     try {
