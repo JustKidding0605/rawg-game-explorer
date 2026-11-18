@@ -11,6 +11,18 @@
   <form id="search-form">
     <button type="button" id="view-backlog">My Backlog</button>
     <input type="text" id="search-input" placeholder="Search games...">
+    <select id="genre-select">
+      <option value="">All Genres</option>
+      <option value="action">Action</option>
+      <option value="rpg">RPG</option>
+      <option value="strategy">Strategy</option>
+      <option value="indie">Indie</option>
+    </select>
+    <select id="ordering-select">
+      <option value="">Relevance</option>
+      <option value="-rating">Highest Rated</option>
+      <option value="-released">Newest Released</option>
+    </select>
     <button type="submit">Search</button>  
   </form>
   <div id="loader" hidden>Loading...</div>

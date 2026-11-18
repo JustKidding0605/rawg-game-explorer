@@ -14,8 +14,8 @@ function clearError() {
 }
 
 
-const searchGames = async(searchTerm) => {
-    const url = `${BACKEND_URL}/games?search=${encodeURIComponent(searchTerm)}`;
+const searchGames = async(searchTerm, genres, ordering) => {
+    const url = `${BACKEND_URL}/games?search=${encodeURIComponent(searchTerm)}&genres=${encodeURIComponent(genres)}&ordering=${encodeURIComponent(ordering)}`;
     clearError();
     loader.hidden = false;
     try {
@@ -129,12 +129,14 @@ const showGameDetail = async(gameId) => {
 
 function handleSearch(event) {
     event.preventDefault();
+    const genresSelect = document.getElementById('genre-select').value;
+    const orderingSelect = document.getElementById('ordering-select').value;
     const searchTerm = document.getElementById('search-input').value;
     if(searchTerm.trim() === '') {
         showError('Please enter a game name');
         return;
     } 
-    searchGames(searchTerm);
+    searchGames(searchTerm, genresSelect, orderingSelect);
 }
 
 const saveToBacklog = async(game, status = "Want to Play") => {
@@ -239,7 +241,7 @@ const removedFromBacklog = async(rawgId) => {
 const form = document.getElementById('search-form');
 form.addEventListener('submit', handleSearch);
 
-const backlogButton = document.getElementById('view-backlog-btn');
+const backlogButton = document.getElementById('view-backlog');
 backlogButton.addEventListener('click', () => {
     loadBacklog();
 });

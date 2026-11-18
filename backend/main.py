@@ -38,20 +38,25 @@ class GameCreate(BaseModel):
     status: str = "Want to Play"
 
 @app.get("/api/games")
-async def search_games(search: str):
+async def search_games(search: str, genres: str | None = None, ordering: str | None = None):
     query = search.strip().lower()
-    if query in search_cache:
-        return search_cache[query]
+    cache_key = f"{query}_{genres}_{ordering}"
+    if cache_key in search_cache:
+        return search_cache[cache_key]
 
     url = f"{BASE_URL}/games"
     params = {"search": query, "key": RAWG_API_KEY}
+    if genres: 
+        params["genres"] = genres
+    if ordering:
+        params["ordering"] = ordering
     
     async with httpx.AsyncClient() as client:
         response = await client.get(url, params=params)
         if response.status_code != 200:
             raise HTTPException(status_code=response.status_code, detail="Error fetching from RAWG")
         data = response.json()
-        search_cache[query] = data
+        search_cache[cache_key] = data
         return data
 
 @app.get("/api/games/{game_id}")
@@ -66,8 +71,11 @@ async def get_game_detail(game_id: int):
         return response.json()
 
 @app.get("/api/backlog")
-def get_backlog(db: Session = Depends(get_db)):
-    return db.query(SavedGame).all()
+def get_backlog(db: Session = Depends(get_db), status: str | None = None):
+    query = db.query(SavedGame)
+    if status:
+        query = query.filter(SavedGame.status == status)
+    return query.all()
 
 @app.post("/api/backlog")
 def add_to_backlog(game: GameCreate, db: Session = Depends(get_db)):
