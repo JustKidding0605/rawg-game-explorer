@@ -1,14 +1,17 @@
 /* --- Fonts --- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono&display=swap');
 
-/* --- Theme vars (match your portfolio) --- */
+/* --- Theme vars --- */
 :root {
   --bg: #faf9f6;
   --text: #1a1a1a;
-  --text-muted: #666;
+  --text-muted: #666666;
   --accent: #c04b2b;
+  --accent-soft: rgba(192, 75, 43, 0.1);
   --border: #e5e2db;
   --card-bg: #ffffff;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 10px 24px rgba(0, 0, 0, 0.09);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,8 +19,11 @@
     --bg: #1a1816;
     --text: #faf9f6;
     --text-muted: #a0a0a0;
+    --accent-soft: rgba(192, 75, 43, 0.18);
     --border: #2e2b27;
     --card-bg: #242120;
+    --shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    --shadow-hover: 0 10px 24px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -38,24 +44,55 @@ body {
   margin: 0 auto;
 }
 
+/* --- Header --- */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
 h1 {
   font-family: 'Fraunces', serif;
   font-weight: 600;
-  font-size: 3rem;
+  font-size: 2.75rem;
   letter-spacing: -0.02em;
-  margin-bottom: 2rem;
 }
 
-/* --- Search form --- */
+#view-backlog-btn {
+  padding: 0.65rem 1.25rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+#view-backlog-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* --- Search form & Filters --- */
 #search-form {
   display: flex;
   gap: 0.75rem;
-  margin-bottom: 3rem;
-  max-width: 500px;
+  margin-bottom: 2.5rem;
+  max-width: 900px;
+  flex-wrap: wrap;
 }
 
 #search-input {
   flex: 1;
+  min-width: 220px;
   padding: 0.75rem 1rem;
   font-family: inherit;
   font-size: 1rem;
@@ -64,11 +101,28 @@ h1 {
   border: 1px solid var(--border);
   border-radius: 6px;
   outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#genre-select,
+#ordering-select {
+  padding: 0.75rem 1rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
-#search-input:focus {
+#search-input:focus,
+#genre-select:focus,
+#ordering-select:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 #search-form button {
@@ -76,53 +130,88 @@ h1 {
   font-family: inherit;
   font-size: 1rem;
   font-weight: 500;
-  color: var(--bg);
+  color: #ffffff;
   background: var(--accent);
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.1s ease;
 }
 
 #search-form button:hover {
-  opacity: 0.9;
+  opacity: 0.92;
 }
 
-/* --- Results grid --- */
-#results {
+#search-form button:active {
+  transform: scale(0.98);
+}
+
+/* --- Status Messages (Loader & Error) --- */
+#loader {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 1.5rem 0;
+}
+
+#error {
+  padding: 0.85rem 1.15rem;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+}
+
+/* --- Results & Backlog Grid --- */
+#results,
+#backlog {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 1.5rem;
 }
 
-/* --- Game cards --- */
-#results > div {
+/* --- Game Cards --- */
+#results > div,
+#backlog > div {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
 }
 
-#results > div:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent);
+#results > div {
+  cursor: pointer;
 }
 
-#results > div img {
+#results > div:hover,
+#backlog > div:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-hover);
+}
+
+#results > div img,
+#backlog > div img {
   width: 100%;
   height: 180px;
   object-fit: cover;
   display: block;
+  background: var(--border);
 }
 
-#results > div h2 {
+#results > div h2,
+#backlog > div h2 {
   font-family: 'Fraunces', serif;
   font-size: 1.25rem;
   font-weight: 500;
-  padding: 1rem 1rem 0.25rem;
+  padding: 1rem 1rem 0.35rem;
 }
 
 #results > div p {
@@ -132,12 +221,62 @@ h1 {
 }
 
 #results > div p:last-child {
-  padding-bottom: 1rem;
+  padding-bottom: 1.15rem;
 }
 
-/* --- Detail view --- */
+/* --- Backlog Card Controls --- */
+#backlog > div select {
+  margin: auto 1rem 0.65rem;
+  padding: 0.55rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+}
+
+#backlog > div select:focus {
+  border-color: var(--accent);
+}
+
+#backlog > div button {
+  margin: 0 1rem 1rem;
+  padding: 0.5rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+#backlog > div button:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* --- Detail View --- */
 #detail {
   max-width: 800px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+}
+
+#detail h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 2.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 #detail img {
@@ -145,38 +284,68 @@ h1 {
   max-height: 400px;
   object-fit: cover;
   border-radius: 8px;
-  margin: 1.5rem 0;
-}
-
-#detail h2 {
-  font-family: 'Fraunces', serif;
-  font-size: 2.5rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin: 1.25rem 0 1.5rem;
+  background: var(--border);
 }
 
 #detail p {
   margin-bottom: 1rem;
   line-height: 1.7;
+  color: var(--text);
+}
+
+#back-button,
+#save-button {
+  padding: 0.65rem 1.25rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 0.75rem;
+  transition: opacity 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
 #back-button {
-  padding: 0.5rem 1rem;
-  font-family: inherit;
-  color: var(--accent);
+  color: var(--text);
   background: transparent;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  cursor: pointer;
-  margin-bottom: 1.5rem;
+  margin-right: 0.75rem;
 }
 
 #back-button:hover {
   border-color: var(--accent);
+  color: var(--accent);
 }
 
-#results > div {
-  cursor: pointer;
+#save-button {
+  color: #ffffff;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+#save-button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+#save-button:disabled {
+  opacity: 0.75;
+  cursor: default;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 600px) {
+  body {
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  h1 {
+    font-size: 2.15rem;
+  }
+
+  #detail {
+    padding: 1.25rem;
+  }
 }
 
 [hidden] {

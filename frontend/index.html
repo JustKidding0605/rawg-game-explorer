@@ -7,9 +7,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>RAWG Game Explorer</h1>
+  <header>
+    <h1>RAWG Game Explorer</h1>
+    <button type="button" id="view-backlog-btn">My Backlog</button>
+  </header>
+
   <form id="search-form">
-    <button type="button" id="view-backlog">My Backlog</button>
     <input type="text" id="search-input" placeholder="Search games...">
     <select id="genre-select">
       <option value="">All Genres</option>
@@ -23,13 +26,15 @@
       <option value="-rating">Highest Rated</option>
       <option value="-released">Newest Released</option>
     </select>
-    <button type="submit">Search</button>  
+    <button type="submit">Search</button>
   </form>
+
   <div id="loader" hidden>Loading...</div>
   <div id="error" hidden></div>
   <div id="results"></div>
   <section id="detail" hidden></section>
   <section id="backlog" hidden></section>
+
   <script src="script.js"></script>
 </body>
 </html>

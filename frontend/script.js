@@ -241,7 +241,7 @@ const removedFromBacklog = async(rawgId) => {
 const form = document.getElementById('search-form');
 form.addEventListener('submit', handleSearch);
 
-const backlogButton = document.getElementById('view-backlog');
+const backlogButton = document.getElementById('view-backlog-btn');
 backlogButton.addEventListener('click', () => {
     loadBacklog();
 });
